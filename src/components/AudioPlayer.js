@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { forwardRef, useState, useEffect } from "react";
 import '../App.css'
 import {
   BsFillPauseCircleFill,
@@ -8,12 +8,13 @@ import {
 
 
 
-export default function AudioPlayer(props) {
+export default forwardRef(function AudioPlayer(props, ref) {
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [current, setCurrent] = useState(0);
   const [currentPart, setCurrentPart] = useState(0);
 
+  //TODO: zmienić current i currentPart na useRefy
 
   const chain = props.chain;
   const parts = [chain.starter, chain.looper];
@@ -21,15 +22,11 @@ export default function AudioPlayer(props) {
 
   const [audio, setAudio] = useState(new Audio(path + parts[currentPart][current]));
 
-
-  // const audio = new Audio(path + chain.starter[0]);
-
   // audio.volume = 0.1;
 
   audio.onended = (e) => {
     let tempCurrent = current + 1;
     let tempCurrentPart = currentPart;
-    // current++;
     setCurrent(tempCurrent);
     if (tempCurrent < parts[tempCurrentPart].length || tempCurrentPart === 1) {
       if (tempCurrent >= parts[tempCurrentPart].length) {
@@ -63,8 +60,6 @@ export default function AudioPlayer(props) {
     }
   };
 
-
-
   //TODO: dodac osobny suwak glosnosci dla kazdego audio playera
 
   const togglePlayPause = () => {
@@ -88,15 +83,6 @@ export default function AudioPlayer(props) {
     audio.pause();
   }
 
-  document.onkeydown = (e) => {
-    console.log("onKey", e.key);
-    console.log("chain", chain.id);
-    if (e.key === (Number(chain.id) + 1).toString()) {
-      togglePlayPause();
-    }
-  }
-  //TODO: cos tu nie dziala (chain.id dla dokumetu zawsze jest równe 3 - ostatni index)
-
   return (
     <div className="grid-item">
       {chain.name}
@@ -104,6 +90,7 @@ export default function AudioPlayer(props) {
         <button
           onClick={togglePlayPause}
           className="button-icon"
+          ref={ref}
         >
           {isPlaying ? (
             <BsFillPauseCircleFill size={30}/>
@@ -120,4 +107,4 @@ export default function AudioPlayer(props) {
       </div>
     </div>
   )
-}
+})

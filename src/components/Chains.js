@@ -1,14 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import '../App.css'
 import AudioPlayer from "./AudioPlayer";
 
 export default function Chains() {
   const [chains, setChains] = useState([]);
-  // const [paused, setPaused] = useState([]);
-  // const [btnText, setBtnText] = useState([]);
-  // const audios = new Map();
-
-  // const path = '/audio/notes/'
+  const ref = useRef([]);
 
   const fetchChains = async () => {
     try {
@@ -21,53 +17,37 @@ export default function Chains() {
       const data = await response.json();
       setChains(data.chains);
 
-      // const temp = [];
-      // for (let i = 0; i < data.chains.length; i++) {
-      //   temp.push('PLAY');
-      //   audios.set(data.chains[i].id, new Audio(path + data.chains[i].starter[0]))
-      // }
-      // setBtnText(temp);
-
     } catch (error) {
       console.error('Error:', error);
     }
   }
 
-  // const playAudio = (audio) => {
-  //   return new Promise(resolve => {
-  //     audio.play();
-  //     audio.onended = resolve;
-  //   })
-  // }
-
-  // const handleClick = async (id, e) => {
-  //   if (e.target.value === 'PLAY') {
-  //
-  //   }
-  //   console.log(e.target.value);
-  //   for (let music of chains[id].starter) {
-  //     console.log(music);
-  //     const audio = new Audio(path + music);
-  //     await playAudio(audio);
-  //   }
-  //   for (let music of chains[id].looper) {
-  //     console.log(music);
-  //     const audio = new Audio(path + music);
-  //     await playAudio(audio);
-  //   }
-  // }
-
   useEffect(() => {
     fetchChains().then();
   }, []);
 
+  document.onkeydown = (e) => {
+    if(!isNaN(Number(e.key))) {
+      if(Number(e.key) <= ref.current.length) {
+        ref.current[Number(e.key) - 1].click();
+      }
+    }
+  }
+
   return (
     <div className="grid-container">
-      {chains.map((chain, index) => (
+      {chains.map((chain) => (
         <AudioPlayer
           className={"grid-item"}
-          key={index}
+          key={chain.id}
           chain={chain}
+          ref={element => {
+            if (element) {
+              ref.current[chain.id] = element;
+            } else {
+              delete ref.current[chain.id];
+            }
+          }}
         />
       ))}
     </div>
