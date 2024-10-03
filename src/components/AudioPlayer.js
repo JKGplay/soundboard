@@ -21,6 +21,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
   const path = '/audio/notes/';
 
   const [audio, setAudio] = useState(new Audio(path + parts[currentPart][current]));
+  const [volume, setVolume] = useState(0.5);
 
   // audio.volume = 0.1;
 
@@ -60,7 +61,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
     }
   };
 
-  //TODO: dodac osobny suwak glosnosci dla kazdego audio playera
+  //TODO: dodac przycisk skipujacy aktualne muzyczke
 
   const togglePlayPause = () => {
     if(isPlaying) {
@@ -104,6 +105,20 @@ export default forwardRef(function AudioPlayer(props, ref) {
         >
           <BsFillStopCircleFill size={30}/>
         </button>
+        <input
+          type="range"
+          name="volume"
+          min={0}
+          max={1}
+          step={0.01}
+          value={volume}
+          onChange={(e) => {
+            if (!audio.ended) {
+              audio.volume = e.target.valueAsNumber;
+            }
+            setVolume(e.target.valueAsNumber);
+          }}
+        />
       </div>
     </div>
   )
