@@ -1,93 +1,95 @@
-import { forwardRef, useState, useEffect } from "react";
+import { forwardRef, useState, useRef } from "react";
 import '../App.css'
 import {
   BsFillPauseCircleFill,
   BsFillPlayCircleFill,
-  BsFillStopCircleFill
+  BsFillStopCircleFill,
+  BsFillSkipBackwardCircleFill,
+  BsFillSkipForwardCircleFill,
 } from "react-icons/bs"
-
-
 
 export default forwardRef(function AudioPlayer(props, ref) {
 
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [current, setCurrent] = useState(0);
-  const [currentPart, setCurrentPart] = useState(0);
-
-  //TODO: zmienić current i currentPart na useRefy
-
+  const path = '/audio/notes/';
   const chain = props.chain;
   const parts = [chain.starter, chain.looper];
-  const path = '/audio/notes/';
 
-  const [audio, setAudio] = useState(new Audio(path + parts[currentPart][current]));
+  const currentAudio = useRef(0);
+  const currentAudioPart = useRef(0);
+  const audioRef = useRef(new Audio(path + parts[0][0]));
+
+  const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
 
-  // audio.volume = 0.1;
-
-  audio.onended = (e) => {
-    let tempCurrent = current + 1;
-    let tempCurrentPart = currentPart;
-    setCurrent(tempCurrent);
-    if (tempCurrent < parts[tempCurrentPart].length || tempCurrentPart === 1) {
-      if (tempCurrent >= parts[tempCurrentPart].length) {
-        tempCurrent = 0;
-        setCurrent(tempCurrent);
+  const nextTrack = () => {
+    currentAudio.current++;
+    if (currentAudio.current >= parts[currentAudioPart.current].length) {
+      if (parts[1].length === 0) {
+        handleStop();
+        return;
       }
-      audio.src = path + parts[tempCurrentPart][tempCurrent];
-      audio.load();
-      audio.onloadeddata = (e) => {
-        audio.play();
+      if (currentAudioPart.current === 0) {
+        currentAudioPart.current = 1;
       }
-    } else {
-      audio.pause();
-      audio.currentTime = 0;
-      tempCurrent = 0;
-      setCurrent(tempCurrent);
-      if (parts[1].length > 1) {
-        tempCurrentPart = 1;
-        setCurrentPart(1);
-      }
-      audio.src = path + parts[tempCurrentPart][tempCurrent];
-      audio.load();
-      audio.onloadeddata = (e) => {
-        if (tempCurrentPart === 0) {
-          audio.pause();
-          setIsPlaying(false);
-        } else {
-          audio.play();
-        }
-      }
+      currentAudio.current = 0;
     }
-  };
+    audioRef.current.pause();
+    audioRef.current.src = path + parts[currentAudioPart.current][currentAudio.current];
+    audioRef.current.load();
+    audioRef.current.onloadeddata = () => {
+      audioRef.current.play();
+    }
+  }
 
-  //TODO: dodac przycisk skipujacy aktualne muzyczke
+  const prevTrack = () => {
+    if (currentAudio.current === 0) {
+      return;
+    }
+    currentAudio.current--;
+    audioRef.current.pause();
+    audioRef.current.src = path + parts[currentAudioPart.current][currentAudio.current];
+    audioRef.current.load();
+    audioRef.current.onloadeddata = () => {
+      audioRef.current.play();
+    }
+  }
+
+  audioRef.current.onended = () => {
+    nextTrack();
+  }
 
   const togglePlayPause = () => {
     if(isPlaying) {
-      audio.pause();
+      audioRef.current.pause();
       setIsPlaying(false);
-      console.log('current: ' + current);
-      console.log('currentPart: ' + currentPart);
     } else {
-      audio.play();
+      audioRef.current.play();
       setIsPlaying(true);
     }
   }
 
   const handleStop = () => {
-    audio.currentTime = 0;
-    setCurrent(0);
-    setCurrentPart(0);
+    audioRef.current.currentTime = 0;
+    currentAudio.current = 0;
+    currentAudioPart.current = 0;
     setIsPlaying(false);
-    audio.src = path + parts[currentPart][current];
-    audio.pause();
+    audioRef.current.src = path + parts[0][0];
+    audioRef.current.load();
+    audioRef.current.onloadeddata = () => {
+      audioRef.current.pause();
+    }
   }
 
   return (
     <div className="grid-item">
       {chain.name}
       <div>
+        <button
+          onClick={prevTrack}
+          className="button-icon"
+        >
+          <BsFillSkipBackwardCircleFill size={30}/>
+        </button>
         <button
           onClick={togglePlayPause}
           className="button-icon"
@@ -98,6 +100,12 @@ export default forwardRef(function AudioPlayer(props, ref) {
           ) : (
             <BsFillPlayCircleFill size={30}/>
           )}
+        </button>
+        <button
+          onClick={nextTrack}
+          className="button-icon"
+        >
+          <BsFillSkipForwardCircleFill size={30}/>
         </button>
         <button
           onClick={handleStop}
@@ -113,8 +121,8 @@ export default forwardRef(function AudioPlayer(props, ref) {
           step={0.01}
           value={volume}
           onChange={(e) => {
-            if (!audio.ended) {
-              audio.volume = e.target.valueAsNumber;
+            if (!audioRef.current.ended) {
+              audioRef.current.volume = e.target.valueAsNumber;
             }
             setVolume(e.target.valueAsNumber);
           }}
