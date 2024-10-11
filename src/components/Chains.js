@@ -8,7 +8,7 @@ export default function Chains() {
 
   const fetchChains = async () => {
     try {
-      const response = await fetch("/data/audio.json");
+      const response = await fetch(process.env.PUBLIC_URL + "/data/audio.json");
 
       if (!response.ok) {
         throw new Error("Failed to fetch chains.");

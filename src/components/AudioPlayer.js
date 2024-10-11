@@ -10,7 +10,7 @@ import {
 
 export default forwardRef(function AudioPlayer(props, ref) {
 
-  const path = '/audio/notes/';
+  const path = process.env.PUBLIC_URL + '/audio/notes/';
   const chain = props.chain;
   const parts = [chain.starter, chain.looper];
 
