@@ -2,14 +2,9 @@
   "chains": [
     {
       "id": 0,
-      "name": "jeden",
+      "name": "pistolet",
       "starter": [
-        "a4.mp3",
-        "a3.mp3",
-        "b4.mp3",
-        "b3.mp3",
-        "c4.mp3",
-        "c3.mp3"
+        "pistol.mp3"
       ],
       "looper": [
 
@@ -17,40 +12,56 @@
     },
     {
       "id": 1,
-      "name": "dwa",
+      "name": "tajemnica",
       "starter": [
-        "a5.mp3",
-        "a5.mp3",
-        "a5.mp3",
-        "a5.mp3"
+        
+        "devilscrossing.mp3"
       ],
       "looper": [
-        "d3.mp3",
-        "d4.mp3",
-        "d5.mp3"
+        "fatecalls.mp3",
+        "devilscrossing.mp3"
       ]
     },
     {
       "id": 2,
-      "name": "trzy",
+      "name": "walka",
       "starter": [
-        "imlerith.mp3"
+        "nemesis.mp3"
       ],
       "looper": [
-
+        "animal.mp3",
+        "nemesis.mp3"
       ]
     },
     {
       "id": 3,
-      "name": "cztery",
+      "name": "karczma",
       "starter": [
-        "radar.mp3",
-        "string.mp3",
-        "goat.mp3"
+        "vagabond.mp3"
       ],
       "looper": [
-
+        "vagabond.mp3"
       ]
-    }
+    },
+    {
+    "id": 4,
+    "name": "zamek",
+    "starter": [
+      "giant.mp3"
+    ],
+    "looper": [
+      "giant.mp3"
+    ]
+  },
+  {
+    "id": 5,
+    "name": "pistolet",
+    "starter": [
+      "pistol.mp3"
+    ],
+    "looper": [
+
+    ]
+  }
   ]
 }
