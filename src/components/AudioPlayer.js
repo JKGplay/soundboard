@@ -10,15 +10,13 @@ import {
 
 export default forwardRef(function AudioPlayer(props, ref) {
 
-  //TODO: nie dziala gdy starter jest pusty
-
   const path = process.env.PUBLIC_URL + '/audio/';
   const chain = props.chain;
   const parts = [chain.starter, chain.looper];
 
   const currentAudio = useRef(0);
   const currentAudioPart = useRef(0);
-  const audioRef = useRef(new Audio(path + parts[0][0]));
+  const audioRef = useRef(new Audio(parts[0].length > 0 ? path + parts[0][0] : path + parts[1][0]));
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.5);
@@ -75,7 +73,7 @@ export default forwardRef(function AudioPlayer(props, ref) {
     currentAudio.current = 0;
     currentAudioPart.current = 0;
     setIsPlaying(false);
-    audioRef.current.src = path + parts[0][0];
+    audioRef.current.src = parts[0].length > 0 ? path + parts[0][0] : path + parts[1][0];
     audioRef.current.load();
     audioRef.current.onloadeddata = () => {
       audioRef.current.pause();
