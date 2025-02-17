@@ -27,7 +27,8 @@ export default function Chains() {
   }, []);
 
   document.onkeydown = (e) => {
-    if(!isNaN(Number(e.key))) {
+    console.log(e.code);
+    if(e.code.startsWith("Digit") || e.code.startsWith("Numpad")) {
       if(Number(e.key) <= ref.current.length) {
         ref.current[Number(e.key) - 1].click();
       }
