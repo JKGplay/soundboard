@@ -58,6 +58,8 @@ export default forwardRef(function AudioPlayer(props, ref) {
     nextTrack();
   }
 
+  //TODO: jeśli audiplik ma mniej niż np. 3 sekundy to kliknięcie klawiatury puszcza go od nowa zamiast pauzować
+
   const togglePlayPause = () => {
     if(isPlaying) {
       audioRef.current.pause();
